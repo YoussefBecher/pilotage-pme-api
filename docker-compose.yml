@@ -1,0 +1,21 @@
+﻿services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: pilotage
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pilotage}
+      POSTGRES_DB: pilotage
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+  api:
+    build: ./api
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - "8001:8000"
+volumes:
+  pgdata:
